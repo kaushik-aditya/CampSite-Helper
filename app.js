@@ -23,7 +23,7 @@ var commentRoutes   = require("./routes/comments"),
 
 //PASSPORT CONFIGURATION==========================
 app.use(require("express-session")({
-    secret: "Aditya Narayan Singh",
+    secret: "Aditya Kaushik",
     resave: false,
     saveUninitialized: false
 }));

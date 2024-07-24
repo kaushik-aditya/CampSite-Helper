@@ -1,17 +1,15 @@
 var express    = require('express');
 var app        = express();
 var bodyParser = require('body-parser');
-var mongoose   = require("mongoose");
 var Campground = require("./models/campground.js");
-var seedDB     = require("./seeds.js");
 var Comment    = require("./models/comment.js");
 var methodOverride = require('method-override');
 var flash          = require("connect-flash");
 
-//User Auth Requires==============================
-var User          = require("./models/user.js");
-var LocalStrategy = require("passport-local");
-var passport      = require("passport");
+//config
+var connectDB = require("./config/db.js");
+var config = require("./config/config.js");
+var passport = require('./config/passportConfig'); // Import Passport configuration
 
 
 //IMPORTING ROUTES============================================
@@ -21,6 +19,14 @@ var commentRoutes   = require("./routes/comments"),
 
 //==================================================
 
+
+connectDB();
+
+app.use(bodyParser.urlencoded({extended: true}));// For retrieving data from Form Tag 
+app.use(express.static('public'));   //for using public directory, static files like image, css, js files
+app.use(methodOverride("_method"));
+app.use(flash());
+
 //PASSPORT CONFIGURATION==========================
 app.use(require("express-session")({
     secret: "Aditya Kaushik",
@@ -29,22 +35,7 @@ app.use(require("express-session")({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 //==================================================
-
-mongoose.connect("mongodb://localhost/yelp_camp", { useNewUrlParser: true, useUnifiedTopology: true});
-
-
-app.use(bodyParser.urlencoded({extended: true}));// For retrieving data from Form Tag 
-app.use(express.static('public'));   //for using public directory, static files like image, css, js files
-app.use(methodOverride("_method"));
-app.use(flash());
-
-//seedDB(); seed the database
 
 
 app.set("view engine", "ejs");     //for using views directory, files like html
@@ -62,8 +53,9 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments",commentRoutes);
 //=================================
 
+const PORT = config.development.server.port;
 
-app.listen(3000, function(req, res){
+app.listen(PORT, function(req, res){
     console.log("Yelp Camp is Started");
 });
 

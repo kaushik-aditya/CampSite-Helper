@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
-var Campground = require("./models/campground");
-var Comment = require ("./models/comment");
+var Campground = require("../models/campground.js");
+var Comment = require ("../models/comment.js");
+var connectDB = require("../config/db.js");
 
 const campgrounds=[
     {
